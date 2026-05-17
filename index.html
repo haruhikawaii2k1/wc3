@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WC3 Save Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold:      #c8a84b;
+    --gold-bright: #f0cc6e;
+    --gold-dim:  #7a6428;
+    --dark:      #0a0804;
+    --panel:     #12100a;
+    --panel2:    #1c1810;
+    --border:    #2e2510;
+    --border-gold: #4a3a18;
+    --text:      #d4c090;
+    --text-dim:  #7a6e50;
+    --red:       #c0392b;
+    --green:     #27ae60;
+    --mono:      'Share Tech Mono', monospace;
+    --serif:     'Cinzel', serif;
+    --radius:    4px;
+    --glow:      0 0 20px rgba(200,168,75,0.15);
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--dark);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── Background texture ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(200,168,75,0.015) 2px,
+        rgba(200,168,75,0.015) 4px
+      ),
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,168,75,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Layout ── */
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+  }
+
+  /* ── Header ── */
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-gold);
+  }
+  .logo-icon {
+    font-size: 36px;
+    display: block;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 12px rgba(200,168,75,0.5));
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-4px); }
+  }
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(20px, 5vw, 32px);
+    font-weight: 900;
+    color: var(--gold-bright);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow: 0 0 30px rgba(200,168,75,0.4);
+  }
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--border-gold);
+  }
+  .tab {
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    color: var(--text-dim);
+    font-family: var(--serif);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab:hover { color: var(--gold); }
+  .tab.active {
+    color: var(--gold-bright);
+    border-bottom-color: var(--gold-bright);
+  }
+
+  /* ── Panel ── */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--glow), inset 0 1px 0 rgba(200,168,75,0.1);
+  }
+
+  /* ── Form ── */
+  .field { margin-bottom: 18px; }
+  label {
+    display: block;
+    font-family: var(--serif);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 6px;
+  }
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    background: var(--panel2);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(200,168,75,0.15);
+  }
+  input::placeholder { color: var(--text-dim); opacity: 0.6; }
+
+  .hint {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* ── Button ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    background: linear-gradient(135deg, #3a2c0a 0%, #1e1608 100%);
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+    color: var(--gold-bright);
+    font-family: var(--serif);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    justify-content: center;
+  }
+  .btn:hover {
+    background: linear-gradient(135deg, #52400e 0%, #2e2008 100%);
+    box-shadow: 0 0 16px rgba(200,168,75,0.3);
+    transform: translateY(-1px);
+  }
+  .btn:active { transform: translateY(0); }
+  .btn-sm {
+    width: auto;
+    padding: 6px 14px;
+    font-size: 11px;
+  }
+
+  /* ── Result box ── */
+  .result-box {
+    margin-top: 20px;
+    background: var(--panel2);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .result-box.show { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-label {
+    font-family: var(--serif);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 8px;
+  }
+
+  /* Password display */
+  .password-display {
+    font-size: clamp(22px, 6vw, 36px);
+    font-weight: bold;
+    letter-spacing: 0.2em;
+    text-align: center;
+    padding: 16px 8px;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: background 0.15s;
+    user-select: all;
+    word-break: break-all;
+  }
+  .password-display:hover { background: rgba(200,168,75,0.05); }
+  .pw-char { transition: color 0.2s; }
+  .pw-char.letter { color: var(--gold-bright); text-shadow: 0 0 8px rgba(200,168,75,0.5); }
+  .pw-char.digit  { color: var(--text-dim); }
+
+  .copy-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+  .copy-hint.copied { color: var(--green); }
+
+  /* Steps breakdown */
+  .steps { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; }
+  .step-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(200,168,75,0.05);
+    gap: 12px;
+  }
+  .step-key {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+  .step-val {
+    font-size: 13px;
+    color: var(--text);
+    text-align: right;
+    font-family: var(--mono);
+    word-break: break-all;
+  }
+  .step-val.mono-gold { color: var(--gold); }
+
+  /* Error / success messages */
+  .msg {
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+  .msg.show { display: block; }
+  .msg.error   { background: rgba(192,57,43,0.15); border: 1px solid #c0392b; color: #e74c3c; }
+  .msg.success { background: rgba(39,174,96,0.15);  border: 1px solid #27ae60; color: #2ecc71; }
+  .msg.warn    { background: rgba(200,168,75,0.1);  border: 1px solid var(--gold-dim); color: var(--gold); }
+
+  /* Decode result */
+  .decode-result {
+    margin-top: 16px;
+    display: none;
+  }
+  .decode-result.show { display: block; }
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .info-card {
+    background: var(--panel2);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius);
+    padding: 14px;
+    text-align: center;
+  }
+  .info-card .val {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--gold-bright);
+    font-family: var(--mono);
+  }
+  .info-card .key {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    font-family: var(--serif);
+  }
+
+  /* Table section */
+  .table-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    user-select: none;
+    border: none;
+    background: none;
+    padding: 0;
+  }
+  .table-toggle:hover { color: var(--gold); }
+  .table-toggle .arrow { transition: transform 0.2s; }
+  .table-toggle.open .arrow { transform: rotate(90deg); }
+
+  .encode-table {
+    display: none;
+    margin-top: 12px;
+    overflow-x: auto;
+  }
+  .encode-table.show { display: block; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th {
+    padding: 6px 10px;
+    background: var(--panel2);
+    color: var(--gold-dim);
+    font-family: var(--serif);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-gold);
+    text-align: center;
+  }
+  td {
+    padding: 5px 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(200,168,75,0.05);
+    font-family: var(--mono);
+  }
+  td:first-child { color: var(--text-dim); }
+  td:not(:first-child) { color: var(--gold); font-weight: bold; }
+  tr:hover td { background: rgba(200,168,75,0.04); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+  footer a { color: var(--gold-dim); text-decoration: none; }
+  footer a:hover { color: var(--gold); }
+
+  /* Section hidden */
+  .tab-section { display: none; }
+  .tab-section.active { display: block; }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .panel { padding: 16px; }
+    .info-grid { grid-template-columns: 1fr; }
+    .step-row { flex-direction: column; align-items: flex-start; }
+    .step-val { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <header>
+    <span class="logo-icon">⚔️</span>
+    <h1 id="gameTitle">WC3 Save Generator</h1>
+    <p class="subtitle" id="gameSubtitle">Warcraft III Map · Save Code Tool</p>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('encode', this)">Generate</button>
+    <button class="tab" onclick="switchTab('decode', this)">Decode</button>
+    <button class="tab" onclick="switchTab('tables', this)">Bảng mã</button>
+  </div>
+
+  <!-- ══ TAB: ENCODE ══ -->
+  <div id="tab-encode" class="tab-section active">
+    <div class="panel">
+      <div class="field">
+        <label>Tên Player</label>
+        <input id="enc-name" type="text" placeholder="Dragon" maxlength="64"
+               oninput="clearResult('enc')" onkeydown="enterKey(event,'enc-index')">
+        <div class="hint">Dùng ký tự 1 và 3 của tên (không phân biệt hoa/thường)</div>
+      </div>
+      <div class="field">
+        <label>Chỉ số (điểm / level)</label>
+        <input id="enc-index" type="number" placeholder="1250" min="0" max="99999"
+               oninput="clearResult('enc')" onkeydown="enterKey(event,'enc-btn')">
+        <div class="hint">Từ 0 đến 99,999</div>
+      </div>
+      <button id="enc-btn" class="btn" onclick="doEncode()">⚔ Tạo Save Code</button>
+
+      <div id="enc-msg" class="msg"></div>
+
+      <!-- Result -->
+      <div id="enc-result" class="result-box">
+        <div class="result-label">Save Code</div>
+        <div id="pw-display" class="password-display" onclick="copyPassword()" title="Click để copy"></div>
+        <div id="copy-hint" class="copy-hint">Click để copy</div>
+
+        <!-- Steps -->
+        <div class="steps">
+          <div class="step-row"><span class="step-key">Prefix (ký tự 1+3)</span><span id="s-prefix" class="step-val mono-gold"></span></div>
+          <div class="step-row"><span class="step-key">Chỉ số (có padding)</span><span id="s-padded" class="step-val"></span></div>
+          <div class="step-row"><span class="step-key">Checksum</span><span id="s-checksum" class="step-val"></span></div>
+          <div class="step-row"><span class="step-key">Seed 9 ký tự</span><span id="s-seed9" class="step-val"></span></div>
+          <div class="step-row"><span class="step-key">Sau mã hóa</span><span id="s-encoded" class="step-val mono-gold"></span></div>
+          <div class="step-row"><span class="step-key">Sau hoán vị</span><span id="s-final" class="step-val mono-gold"></span></div>
+        </div>
+
+        <!-- WC3 colored -->
+        <div style="margin-top:14px">
+          <div class="result-label">Preview màu WC3</div>
+          <div id="wc3-preview" style="font-size:13px; word-break:break-all; line-height:1.8;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: DECODE ══ -->
+  <div id="tab-decode" class="tab-section">
+    <div class="panel">
+      <div class="field">
+        <label>Save Code (9 ký tự)</label>
+        <input id="dec-code" type="text" placeholder="FKAUYDFN7" maxlength="9"
+               oninput="clearResult('dec')" onkeydown="enterKey(event,'dec-btn')"
+               style="text-transform:uppercase; letter-spacing:0.15em; font-size:18px;">
+      </div>
+      <button id="dec-btn" class="btn" onclick="doDecode()">🔍 Giải Mã</button>
+
+      <div id="dec-msg" class="msg"></div>
+
+      <div id="dec-result" class="decode-result">
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="val" id="d-index">—</div>
+            <div class="key">Chỉ số</div>
+          </div>
+          <div class="info-card">
+            <div class="val" id="d-prefix">—</div>
+            <div class="key">Prefix tên</div>
+          </div>
+          <div class="info-card" style="grid-column:1/-1">
+            <div class="val" id="d-checksum">—</div>
+            <div class="key">Checksum</div>
+          </div>
+        </div>
+
+        <!-- Steps -->
+        <div class="steps" style="margin-top:16px">
+          <div class="step-row"><span class="step-key">Đảo hoán vị</span><span id="ds-unperm" class="step-val mono-gold"></span></div>
+          <div class="step-row"><span class="step-key">Sau giải mã digit</span><span id="ds-seed9" class="step-val"></span></div>
+          <div class="step-row"><span class="step-key">5 digit dữ liệu</span><span id="ds-data" class="step-val"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: TABLES ══ -->
+  <div id="tab-tables" class="tab-section">
+    <div class="panel">
+      <p style="color:var(--text-dim); font-size:12px; margin-bottom:16px; line-height:1.8;">
+        7 bảng mã hóa này được tái tạo từ <code style="color:var(--gold)">War3map.j</code>.
+        Mỗi bảng ánh xạ một chữ số (0–9) thành một ký tự cho từng vị trí trong seed.
+      </p>
+      <div id="tables-container"></div>
+
+      <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border)">
+        <div class="result-label" style="margin-bottom:8px">Hoán vị (0-based)</div>
+        <div id="perm-display" style="font-family:var(--mono); color:var(--gold); font-size:15px; letter-spacing:0.1em;"></div>
+        <div class="hint" style="margin-top:4px">
+          output[i] = encoded[permutation[i]] — lấy theo thứ tự [5,8,2,4,7,1,6,9,3] (1-based)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Tái tạo từ War3map.j bằng <a href="#" title="jass_deobfuscator.py">jass_deobfuscator.py</a>
+    &nbsp;·&nbsp;
+    Chỉnh bảng mã tại <code style="color:var(--gold-dim)">config.js</code>
+  </footer>
+
+</div><!-- .wrap -->
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// Load config (từ config.js hoặc fallback inline)
+// ─────────────────────────────────────────────────────────────
+const CFG = (typeof WC3_CONFIG !== 'undefined') ? WC3_CONFIG : {
+  game: { name:'WC3 Save Generator', description:'Warcraft III Save Tool', maxIndex:99999, passwordLen:9 },
+  encodeTables: [
+    {0:'7',1:'2',2:'8',3:'S',4:'W',5:'A',6:'T',7:'1',8:'6',9:'4'},
+    {0:'5',1:'U',2:'6',3:'I',4:'8',5:'O',6:'L',7:'J',8:'F',9:'E'},
+    {0:'8',1:'4',2:'F',3:'6',4:'9',5:'I',6:'3',7:'5',8:'B',9:'S'},
+    {0:'7',1:'T',2:'2',3:'D',4:'3',5:'F',6:'1',7:'G',8:'9',9:'H'},
+    {0:'Y',1:'S',2:'G',3:'H',4:'M',5:'C',6:'O',7:'P',8:'Q',9:'B'},
+    {0:'K',1:'3',2:'S',3:'8',4:'Y',5:'2',6:'O',7:'4',8:'P',9:'6'},
+    {0:'4',1:'G',2:'8',3:'A',4:'C',5:'Z',6:'X',7:'V',8:'N',9:'M'},
+  ],
+  permutation: [4,7,1,3,6,0,5,8,2],
+  wc3Color: 'FFFFCC00',
+};
+
+// Áp dụng thông tin game
+document.getElementById('gameTitle').textContent    = CFG.game.name;
+document.getElementById('gameSubtitle').textContent = CFG.game.description;
+document.title = CFG.game.name;
+
+// Bảng nghịch: ký tự → digit
+const DECODE_TABLES = CFG.encodeTables.map(t =>
+  Object.fromEntries(Object.entries(t).map(([k,v]) => [v, Number(k)]))
+);
+
+// ─────────────────────────────────────────────────────────────
+// Core logic (mirror wc3_save_generator.py)
+// ─────────────────────────────────────────────────────────────
+
+function getPrefix(name) {
+  const u = name.toUpperCase();
+  const c1 = u[0] || 'X';
+  const c3 = u[2] || 'X';
+  return c1 + c3;
+}
+
+function padIndex(idx) {
+  if (idx <= 9)     return '0000' + idx;
+  if (idx <= 99)    return '000'  + idx;
+  if (idx <= 999)   return '00'   + idx;
+  if (idx <= 9999)  return '0'    + idx;
+  if (idx <= 99999) return ''     + idx;
+  return '99999';
+}
+
+function computeChecksum(seed7) {
+  let total = 0;
+  for (let i = 2; i < 7; i++) total += parseInt(seed7[i]);
+  return total <= 9 ? '0' + total : '' + total;
+}
+
+function encodeDigits(seed9) {
+  let enc = seed9.slice(0, 2);
+  for (let i = 0; i < 7; i++) {
+    const digit = parseInt(seed9[2 + i]);
+    enc += CFG.encodeTables[i][digit];
+  }
+  return enc;
+}
+
+function permute(s9) {
+  return CFG.permutation.map(i => s9[i]).join('');
+}
+
+function generate(name, index) {
+  const prefix   = getPrefix(name);
+  const padded   = padIndex(index);
+  const seed7    = prefix + padded;
+  const checksum = computeChecksum(seed7);
+  const seed9    = seed7 + checksum;
+  const encoded9 = encodeDigits(seed9);
+  const final    = permute(encoded9);
+  return { prefix, padded, checksum, seed7, seed9, encoded9, final };
+}
+
+function decode(pw) {
+  if (pw.length !== CFG.game.passwordLen) return null;
+
+  // Đảo hoán vị
+  const unperm = new Array(9);
+  CFG.permutation.forEach((inIdx, outIdx) => { unperm[inIdx] = pw[outIdx]; });
+  const unpermed = unperm.join('');
+
+  const prefix = unpermed.slice(0, 2);
+  let digits = '';
+  for (let i = 0; i < 7; i++) {
+    const ch = unpermed[2 + i];
+    const d = DECODE_TABLES[i][ch];
+    if (d === undefined) return { error: `Ký tự '${ch}' không hợp lệ ở bảng ${i+1}` };
+    digits += d;
+  }
+
+  const seed9       = prefix + digits;
+  const actualCs    = parseInt(seed9.slice(7, 9));
+  const expectedCs  = [2,3,4,5,6].reduce((s,i) => s + parseInt(seed9[i]), 0);
+  const index       = parseInt(seed9.slice(2, 7));
+
+  return {
+    prefix, digits, seed9, index,
+    actualCs, expectedCs,
+    checksumOk: actualCs === expectedCs,
+    unpermed,
+    dataStr: seed9.slice(2, 7),
+    error: null,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────
+// UI
+// ─────────────────────────────────────────────────────────────
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showMsg(id, text, type) {
+  const el = document.getElementById(id + '-msg');
+  el.textContent = text;
+  el.className = `msg ${type} show`;
+}
+function clearMsg(id) {
+  const el = document.getElementById(id + '-msg');
+  if (el) { el.className = 'msg'; el.textContent = ''; }
+}
+function clearResult(id) {
+  clearMsg(id);
+  const r = document.getElementById(id + '-result') || document.getElementById('dec-result');
+  if (r) r.classList.remove('show');
+}
+
+function enterKey(e, nextId) {
+  if (e.key === 'Enter') {
+    const el = document.getElementById(nextId);
+    if (el.tagName === 'BUTTON') el.click();
+    else el.focus();
+  }
+}
+
+// Password display with colored chars
+function renderPassword(pw) {
+  return pw.split('').map(ch => {
+    const cls = /\d/.test(ch) ? 'digit' : 'letter';
+    return `<span class="pw-char ${cls}">${ch}</span>`;
+  }).join('');
+}
+
+// WC3 color preview
+function renderWc3(pw) {
+  return pw.split('').map(ch => {
+    if (/\d/.test(ch)) return `<span style="color:var(--text-dim)">${ch}</span>`;
+    return `<span style="color:#${CFG.wc3Color}; text-shadow:0 0 6px rgba(200,168,75,0.6); font-weight:bold">${ch}</span>`;
+  }).join('');
+}
+
+function doEncode() {
+  clearMsg('enc');
+  const name  = document.getElementById('enc-name').value.trim();
+  const idxRaw = document.getElementById('enc-index').value.trim();
+
+  if (!name) return showMsg('enc', 'Vui lòng nhập tên player.', 'error');
+  if (name.length < 3) return showMsg('enc', 'Tên phải có ít nhất 3 ký tự (cần ký tự 1 và 3).', 'error');
+  if (idxRaw === '') return showMsg('enc', 'Vui lòng nhập chỉ số.', 'error');
+
+  const idx = parseInt(idxRaw);
+  if (isNaN(idx) || idx < 0) return showMsg('enc', 'Chỉ số phải là số không âm.', 'error');
+  if (idx > CFG.game.maxIndex) return showMsg('enc', `Chỉ số tối đa là ${CFG.game.maxIndex.toLocaleString()}.`, 'error');
+
+  const r = generate(name, idx);
+
+  document.getElementById('pw-display').innerHTML = renderPassword(r.final);
+  document.getElementById('copy-hint').textContent = 'Click để copy';
+  document.getElementById('copy-hint').className = 'copy-hint';
+
+  document.getElementById('s-prefix').textContent   = r.prefix;
+  document.getElementById('s-padded').textContent   = r.padded + ' (' + idx + ')';
+  document.getElementById('s-checksum').textContent = r.checksum + ' (tổng: ' + [2,3,4,5,6].reduce((s,i) => s+parseInt(r.seed7[i]),0) + ')';
+  document.getElementById('s-seed9').textContent    = r.seed9;
+  document.getElementById('s-encoded').textContent  = r.encoded9;
+  document.getElementById('s-final').textContent    = r.final;
+
+  document.getElementById('wc3-preview').innerHTML =
+    '|CFFFFCC00 ... |R notation: ' + renderWc3(r.final);
+
+  document.getElementById('enc-result').classList.add('show');
+  document.getElementById('enc-result')._pw = r.final;
+}
+
+function doDecode() {
+  clearMsg('dec');
+  const raw = document.getElementById('dec-code').value.trim().toUpperCase();
+
+  if (!raw) return showMsg('dec', 'Vui lòng nhập save code.', 'error');
+  if (raw.length !== CFG.game.passwordLen)
+    return showMsg('dec', `Save code phải đúng ${CFG.game.passwordLen} ký tự (nhận được ${raw.length}).`, 'error');
+
+  const r = decode(raw);
+  if (!r) return showMsg('dec', 'Lỗi không xác định.', 'error');
+  if (r.error) return showMsg('dec', r.error, 'error');
+
+  document.getElementById('d-index').textContent    = r.index.toLocaleString();
+  document.getElementById('d-prefix').textContent   = r.prefix;
+  document.getElementById('d-checksum').textContent = r.checksumOk
+    ? `${r.actualCs} ✓` : `${r.actualCs} ≠ ${r.expectedCs} ✗`;
+  document.getElementById('d-checksum').style.color = r.checksumOk ? 'var(--green)' : 'var(--red)';
+
+  document.getElementById('ds-unperm').textContent  = r.unpermed;
+  document.getElementById('ds-seed9').textContent   = r.seed9;
+  document.getElementById('ds-data').textContent    = r.dataStr + ' → ' + r.index;
+
+  if (!r.checksumOk)
+    showMsg('dec', `⚠ Checksum không khớp (tính được ${r.expectedCs}, trong code là ${r.actualCs}). Code có thể bị sai.`, 'warn');
+
+  document.getElementById('dec-result').classList.add('show');
+}
+
+function copyPassword() {
+  const box = document.getElementById('enc-result');
+  const pw  = box._pw;
+  if (!pw) return;
+  navigator.clipboard.writeText(pw).then(() => {
+    const hint = document.getElementById('copy-hint');
+    hint.textContent = '✓ Đã copy!';
+    hint.className = 'copy-hint copied';
+    setTimeout(() => {
+      hint.textContent = 'Click để copy';
+      hint.className = 'copy-hint';
+    }, 2000);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// Build encode tables display
+// ─────────────────────────────────────────────────────────────
+function buildTables() {
+  const container = document.getElementById('tables-container');
+  const digits = [0,1,2,3,4,5,6,7,8,9];
+
+  // Single merged table
+  const tbl = document.createElement('table');
+  const thead = document.createElement('thead');
+  const hRow = document.createElement('tr');
+  ['Digit', ...CFG.encodeTables.map((_,i) => `Bảng ${i+1}`)].forEach(h => {
+    const th = document.createElement('th');
+    th.textContent = h;
+    hRow.appendChild(th);
+  });
+  thead.appendChild(hRow);
+  tbl.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  digits.forEach(d => {
+    const tr = document.createElement('tr');
+    [d, ...CFG.encodeTables.map(t => t[d])].forEach((v, i) => {
+      const td = document.createElement('td');
+      td.textContent = v;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  tbl.appendChild(tbody);
+  container.appendChild(tbl);
+
+  // Permutation
+  document.getElementById('perm-display').textContent =
+    '[' + CFG.permutation.join(', ') + ']';
+}
+buildTables();
+</script>
+</body>
+</html>
