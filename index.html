@@ -3,436 +3,414 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WC3 Save Generator</title>
+<title>SDM Defence — Save Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <script src="config.js"></script>
 <style>
-  /* ── Reset & Base ── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --gold:      #c8a84b;
-    --gold-bright: #f0cc6e;
-    --gold-dim:  #7a6428;
-    --dark:      #0a0804;
-    --panel:     #12100a;
-    --panel2:    #1c1810;
-    --border:    #2e2510;
-    --border-gold: #4a3a18;
-    --text:      #d4c090;
-    --text-dim:  #7a6e50;
-    --red:       #c0392b;
-    --green:     #27ae60;
-    --mono:      'Share Tech Mono', monospace;
-    --serif:     'Cinzel', serif;
-    --radius:    4px;
-    --glow:      0 0 20px rgba(200,168,75,0.15);
-  }
+:root {
+  --teal:        #00e5cc;
+  --teal-dim:    #009e8e;
+  --teal-dark:   #003d38;
+  --crimson:     #c0202a;
+  --crimson-dim: #7a1218;
+  --gold:        #d4a84b;
+  --gold-bright: #f2c96a;
+  --dark:        #080b0a;
+  --panel:       #0d1210;
+  --panel2:      #141a18;
+  --border:      #1e2e2a;
+  --border-teal: #1a4040;
+  --text:        #c8ddd8;
+  --text-dim:    #5a7870;
+  --green:       #2ecc71;
+  --red:         #e74c3c;
+  --mono:        'Share Tech Mono', monospace;
+  --serif:       'Cinzel', serif;
+  --fell:        'IM Fell English', serif;
+  --radius:      3px;
+}
 
-  html, body {
-    min-height: 100vh;
-    background: var(--dark);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 14px;
-    line-height: 1.6;
-  }
+html, body {
+  min-height: 100vh;
+  background: var(--dark);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+}
 
-  /* ── Background texture ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(200,168,75,0.015) 2px,
-        rgba(200,168,75,0.015) 4px
-      ),
-      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,168,75,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(0,229,204,0.012) 60px, rgba(0,229,204,0.012) 61px),
+    repeating-linear-gradient(0deg,  transparent, transparent 60px, rgba(0,229,204,0.012) 60px, rgba(0,229,204,0.012) 61px),
+    radial-gradient(ellipse 100% 50% at 50% 100%, rgba(192,32,42,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 0%,   rgba(0,229,204,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
 
-  /* ── Layout ── */
-  .wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 32px 20px 64px;
-  }
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
 
-  /* ── Header ── */
-  header {
-    text-align: center;
-    margin-bottom: 40px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border-gold);
-  }
-  .logo-icon {
-    font-size: 36px;
-    display: block;
-    margin-bottom: 8px;
-    filter: drop-shadow(0 0 12px rgba(200,168,75,0.5));
-    animation: float 3s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%,100% { transform: translateY(0); }
-    50%      { transform: translateY(-4px); }
-  }
-  h1 {
-    font-family: var(--serif);
-    font-size: clamp(20px, 5vw, 32px);
-    font-weight: 900;
-    color: var(--gold-bright);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-shadow: 0 0 30px rgba(200,168,75,0.4);
-  }
-  .subtitle {
-    color: var(--text-dim);
-    font-size: 12px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
+/* ── HERO ── */
+.hero {
+  position: relative;
+  width: calc(100% + 40px);
+  margin-left: -20px;
+  height: clamp(260px, 45vw, 420px);
+  overflow: hidden;
+}
+.hero-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  filter: saturate(1.1) contrast(1.05);
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    linear-gradient(to bottom, rgba(8,11,10,0) 30%, rgba(8,11,10,0.96) 100%),
+    linear-gradient(to right,  rgba(192,32,42,0.18) 0%, transparent 40%),
+    linear-gradient(to left,   rgba(0,229,204,0.10) 0%, transparent 40%);
+}
+.hero::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 2;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
+  pointer-events: none;
+}
+.hero-content {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
+  padding: 24px 28px 28px;
+}
+.game-badge {
+  display: inline-block;
+  background: var(--crimson);
+  color: #fff;
+  font-family: var(--serif);
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 3px 10px; margin-bottom: 8px;
+}
+.game-title {
+  font-family: var(--serif);
+  font-size: clamp(22px, 5vw, 42px);
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 40px rgba(0,229,204,0.4), 0 2px 8px rgba(0,0,0,0.8);
+  line-height: 1.1;
+}
+.game-title span {
+  color: var(--teal);
+  text-shadow: 0 0 20px rgba(0,229,204,0.8), 0 0 60px rgba(0,229,204,0.3);
+}
+.game-version {
+  font-size: 12px; color: var(--text-dim);
+  letter-spacing: 0.15em; margin-top: 4px;
+}
 
-  /* ── Tabs ── */
-  .tabs {
-    display: flex;
-    gap: 2px;
-    margin-bottom: 24px;
-    border-bottom: 2px solid var(--border-gold);
-  }
-  .tab {
-    padding: 10px 20px;
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    color: var(--text-dim);
-    font-family: var(--serif);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .tab:hover { color: var(--gold); }
-  .tab.active {
-    color: var(--gold-bright);
-    border-bottom-color: var(--gold-bright);
-  }
+/* ── INFO SECTION ── */
+.info-section {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: start;
+  padding: 24px 0 20px;
+  border-bottom: 1px solid var(--border-teal);
+  margin-bottom: 28px;
+}
+.game-desc {
+  font-family: var(--fell);
+  font-style: italic;
+  font-size: 15px; color: var(--text); line-height: 1.7;
+  margin-bottom: 14px;
+}
+.game-meta { font-size: 11px; color: var(--text-dim); line-height: 2.1; }
+.game-meta strong { color: var(--teal-dim); font-family: var(--mono); font-style: normal; }
+.game-meta a { color: var(--teal-dim); text-decoration: none; }
+.game-meta a:hover { color: var(--teal); }
+.warning-box {
+  margin-top: 12px; padding: 10px 14px;
+  border-left: 3px solid var(--crimson);
+  background: rgba(192,32,42,0.08);
+  font-size: 11px; color: #c0808a; line-height: 1.6;
+}
+.warning-box strong { color: var(--crimson); }
 
-  /* ── Panel ── */
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--border-gold);
-    border-radius: var(--radius);
-    padding: 24px;
-    box-shadow: var(--glow), inset 0 1px 0 rgba(200,168,75,0.1);
-  }
+.btn-download {
+  display: inline-flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  padding: 14px 22px;
+  background: linear-gradient(160deg, #1a0a0c 0%, #0d0608 100%);
+  border: 1px solid var(--crimson);
+  border-radius: var(--radius);
+  color: #f0a0a8;
+  font-family: var(--serif); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; text-decoration: none;
+  transition: all 0.2s; white-space: nowrap;
+  box-shadow: 0 0 20px rgba(192,32,42,0.15);
+}
+.btn-download:hover {
+  background: linear-gradient(160deg, #2e0f12 0%, #1a080a 100%);
+  box-shadow: 0 0 28px rgba(192,32,42,0.35);
+  transform: translateY(-2px); color: #ffb0b8;
+}
+.btn-download .dl-icon { font-size: 22px; }
+.btn-download .dl-sub  { font-size: 9px; color: var(--crimson-dim); letter-spacing: 0.15em; }
 
-  /* ── Form ── */
-  .field { margin-bottom: 18px; }
-  label {
-    display: block;
-    font-family: var(--serif);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    margin-bottom: 6px;
-  }
-  input[type="text"],
-  input[type="number"] {
-    width: 100%;
-    background: var(--panel2);
-    border: 1px solid var(--border-gold);
-    border-radius: var(--radius);
-    padding: 10px 14px;
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  input:focus {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 2px rgba(200,168,75,0.15);
-  }
-  input::placeholder { color: var(--text-dim); opacity: 0.6; }
+@media (max-width: 520px) {
+  .info-section { grid-template-columns: 1fr; }
+  .btn-download { flex-direction: row; gap: 10px; padding: 12px 18px; }
+}
 
-  .hint {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
+/* ── TOOL HEADER ── */
+.tool-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.tool-header h2 {
+  font-family: var(--serif); font-size: 14px; font-weight: 700;
+  letter-spacing: 0.15em; text-transform: uppercase; color: var(--teal);
+}
+.tool-header::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, var(--border-teal), transparent);
+}
 
-  /* ── Button ── */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 24px;
-    background: linear-gradient(135deg, #3a2c0a 0%, #1e1608 100%);
-    border: 1px solid var(--gold);
-    border-radius: var(--radius);
-    color: var(--gold-bright);
-    font-family: var(--serif);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 100%;
-    justify-content: center;
-  }
-  .btn:hover {
-    background: linear-gradient(135deg, #52400e 0%, #2e2008 100%);
-    box-shadow: 0 0 16px rgba(200,168,75,0.3);
-    transform: translateY(-1px);
-  }
-  .btn:active { transform: translateY(0); }
-  .btn-sm {
-    width: auto;
-    padding: 6px 14px;
-    font-size: 11px;
-  }
+/* ── TABS ── */
+.tabs {
+  display: flex; gap: 0; margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-teal);
+}
+.tab {
+  padding: 9px 18px; background: transparent; border: none;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  color: var(--text-dim); font-family: var(--serif); font-size: 12px;
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}
+.tab:hover { color: var(--teal); }
+.tab.active { color: var(--teal); border-bottom-color: var(--teal); }
 
-  /* ── Result box ── */
-  .result-box {
-    margin-top: 20px;
-    background: var(--panel2);
-    border: 1px solid var(--border-gold);
-    border-radius: var(--radius);
-    padding: 20px;
-    display: none;
-    animation: fadeIn 0.3s ease;
-  }
-  .result-box.show { display: block; }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+/* ── PANEL ── */
+.panel {
+  background: var(--panel); border: 1px solid var(--border-teal);
+  border-radius: var(--radius); padding: 22px;
+  box-shadow: 0 0 24px rgba(0,229,204,0.05), inset 0 1px 0 rgba(0,229,204,0.06);
+}
+.field { margin-bottom: 16px; }
+label {
+  display: block; font-family: var(--serif); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal-dim); margin-bottom: 6px;
+}
+input[type="text"], input[type="number"] {
+  width: 100%; background: var(--panel2); border: 1px solid var(--border-teal);
+  border-radius: var(--radius); padding: 10px 14px; color: var(--text);
+  font-family: var(--mono); font-size: 15px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus { border-color: var(--teal-dim); box-shadow: 0 0 0 2px rgba(0,229,204,0.1); }
+input::placeholder { color: var(--text-dim); opacity: 0.5; }
+.hint { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
 
-  .result-label {
-    font-family: var(--serif);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    margin-bottom: 8px;
-  }
+/* ── BUTTON ROW ── */
+.btn-row {
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 10px; align-items: stretch;
+}
+@media (max-width: 420px) { .btn-row { grid-template-columns: 1fr; } }
 
-  /* Password display */
-  .password-display {
-    font-size: clamp(22px, 6vw, 36px);
-    font-weight: bold;
-    letter-spacing: 0.2em;
-    text-align: center;
-    padding: 16px 8px;
-    cursor: pointer;
-    border-radius: var(--radius);
-    transition: background 0.15s;
-    user-select: all;
-    word-break: break-all;
-  }
-  .password-display:hover { background: rgba(200,168,75,0.05); }
-  .pw-char { transition: color 0.2s; }
-  .pw-char.letter { color: var(--gold-bright); text-shadow: 0 0 8px rgba(200,168,75,0.5); }
-  .pw-char.digit  { color: var(--text-dim); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 20px;
+  background: linear-gradient(135deg, #0a2422 0%, #060f0e 100%);
+  border: 1px solid var(--teal-dim); border-radius: var(--radius);
+  color: var(--teal); font-family: var(--serif); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn:hover {
+  background: linear-gradient(135deg, #0f3432 0%, #091412 100%);
+  box-shadow: 0 0 18px rgba(0,229,204,0.2); transform: translateY(-1px);
+}
+.btn:active { transform: translateY(0); }
 
-  .copy-hint {
-    text-align: center;
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
-  .copy-hint.copied { color: var(--green); }
+.btn-dl-sm {
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #1a0a0c 0%, #0d0608 100%);
+  border: 1px solid var(--crimson-dim); border-radius: var(--radius);
+  color: #e08090; font-family: var(--serif); font-size: 9px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; text-decoration: none; transition: all 0.2s; white-space: nowrap;
+}
+.btn-dl-sm:hover {
+  border-color: var(--crimson);
+  box-shadow: 0 0 16px rgba(192,32,42,0.25);
+  color: #ffaabb; transform: translateY(-1px);
+}
+.btn-dl-sm .icon { font-size: 18px; line-height: 1; }
 
-  /* Steps breakdown */
-  .steps { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; }
-  .step-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 0;
-    border-bottom: 1px solid rgba(200,168,75,0.05);
-    gap: 12px;
-  }
-  .step-key {
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 0.05em;
-    flex-shrink: 0;
-  }
-  .step-val {
-    font-size: 13px;
-    color: var(--text);
-    text-align: right;
-    font-family: var(--mono);
-    word-break: break-all;
-  }
-  .step-val.mono-gold { color: var(--gold); }
+/* ── RESULT BOX ── */
+.result-box {
+  margin-top: 18px; background: var(--panel2);
+  border: 1px solid var(--border-teal); border-radius: var(--radius);
+  padding: 18px; display: none; animation: fadeUp 0.25s ease;
+}
+.result-box.show { display: block; }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.result-label {
+  font-family: var(--serif); font-size: 9px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--teal-dim); margin-bottom: 8px;
+}
+.password-display {
+  font-size: clamp(24px, 7vw, 40px); font-weight: bold;
+  letter-spacing: 0.18em; text-align: center;
+  padding: 14px 8px; cursor: pointer; border-radius: var(--radius);
+  transition: background 0.15s; user-select: all; word-break: break-all;
+}
+.password-display:hover { background: rgba(0,229,204,0.04); }
+.pw-char.letter { color: var(--teal); text-shadow: 0 0 10px rgba(0,229,204,0.6); }
+.pw-char.digit  { color: var(--text-dim); }
+.copy-hint { text-align: center; font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.copy-hint.copied { color: var(--green); }
+.steps { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 14px; }
+.step-row {
+  display: flex; justify-content: space-between;
+  align-items: center; padding: 4px 0; gap: 12px;
+  border-bottom: 1px solid rgba(0,229,204,0.04);
+}
+.step-key { font-size: 11px; color: var(--text-dim); flex-shrink: 0; }
+.step-val { font-size: 12px; color: var(--text); text-align: right; font-family: var(--mono); word-break: break-all; }
+.step-val.hl { color: var(--teal); }
 
-  /* Error / success messages */
-  .msg {
-    padding: 10px 14px;
-    border-radius: var(--radius);
-    font-size: 13px;
-    margin-top: 12px;
-    display: none;
-  }
-  .msg.show { display: block; }
-  .msg.error   { background: rgba(192,57,43,0.15); border: 1px solid #c0392b; color: #e74c3c; }
-  .msg.success { background: rgba(39,174,96,0.15);  border: 1px solid #27ae60; color: #2ecc71; }
-  .msg.warn    { background: rgba(200,168,75,0.1);  border: 1px solid var(--gold-dim); color: var(--gold); }
+/* msg */
+.msg { padding: 9px 14px; border-radius: var(--radius); font-size: 12px; margin-top: 10px; display: none; }
+.msg.show { display: block; }
+.msg.error  { background: rgba(192,32,42,0.12); border: 1px solid var(--crimson-dim); color: #e07080; }
+.msg.success{ background: rgba(46,204,113,0.10); border: 1px solid #27ae60; color: #2ecc71; }
+.msg.warn   { background: rgba(0,229,204,0.07);  border: 1px solid var(--teal-dark);  color: var(--teal-dim); }
 
-  /* Decode result */
-  .decode-result {
-    margin-top: 16px;
-    display: none;
-  }
-  .decode-result.show { display: block; }
-  .info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 12px;
-  }
-  .info-card {
-    background: var(--panel2);
-    border: 1px solid var(--border-gold);
-    border-radius: var(--radius);
-    padding: 14px;
-    text-align: center;
-  }
-  .info-card .val {
-    font-size: 22px;
-    font-weight: bold;
-    color: var(--gold-bright);
-    font-family: var(--mono);
-  }
-  .info-card .key {
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-top: 4px;
-    font-family: var(--serif);
-  }
+/* decode result */
+.decode-result { margin-top: 14px; display: none; }
+.decode-result.show { display: block; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.info-card {
+  background: var(--panel); border: 1px solid var(--border-teal);
+  border-radius: var(--radius); padding: 14px; text-align: center;
+}
+.info-card .val { font-size: 22px; font-weight: bold; color: var(--teal); font-family: var(--mono); }
+.info-card .key {
+  font-size: 9px; color: var(--text-dim); letter-spacing: 0.15em;
+  text-transform: uppercase; margin-top: 4px; font-family: var(--serif);
+}
 
-  /* Table section */
-  .table-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 20px;
-    cursor: pointer;
-    color: var(--text-dim);
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    user-select: none;
-    border: none;
-    background: none;
-    padding: 0;
-  }
-  .table-toggle:hover { color: var(--gold); }
-  .table-toggle .arrow { transition: transform 0.2s; }
-  .table-toggle.open .arrow { transform: rotate(90deg); }
+/* tables */
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th {
+  padding: 6px 8px; background: var(--panel2); color: var(--teal-dim);
+  font-family: var(--serif); font-size: 9px; letter-spacing: 0.12em;
+  text-transform: uppercase; border-bottom: 1px solid var(--border-teal); text-align: center;
+}
+td { padding: 5px 8px; text-align: center; border-bottom: 1px solid rgba(0,229,204,0.04); font-family: var(--mono); }
+td:first-child { color: var(--text-dim); }
+td:not(:first-child) { color: var(--teal); font-weight: bold; }
+tr:hover td { background: rgba(0,229,204,0.03); }
 
-  .encode-table {
-    display: none;
-    margin-top: 12px;
-    overflow-x: auto;
-  }
-  .encode-table.show { display: block; }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-  th {
-    padding: 6px 10px;
-    background: var(--panel2);
-    color: var(--gold-dim);
-    font-family: var(--serif);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--border-gold);
-    text-align: center;
-  }
-  td {
-    padding: 5px 10px;
-    text-align: center;
-    border-bottom: 1px solid rgba(200,168,75,0.05);
-    font-family: var(--mono);
-  }
-  td:first-child { color: var(--text-dim); }
-  td:not(:first-child) { color: var(--gold); font-weight: bold; }
-  tr:hover td { background: rgba(200,168,75,0.04); }
+.tab-section { display: none; }
+.tab-section.active { display: block; }
 
-  /* Footer */
-  footer {
-    text-align: center;
-    margin-top: 48px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-    color: var(--text-dim);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-  }
-  footer a { color: var(--gold-dim); text-decoration: none; }
-  footer a:hover { color: var(--gold); }
+footer {
+  text-align: center; margin-top: 48px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim); font-size: 11px; line-height: 2; letter-spacing: 0.05em;
+}
+footer a { color: var(--teal-dim); text-decoration: none; }
+footer a:hover { color: var(--teal); }
+.footer-credits { font-size: 10px; opacity: 0.6; margin-top: 4px; }
 
-  /* Section hidden */
-  .tab-section { display: none; }
-  .tab-section.active { display: block; }
-
-  /* Responsive */
-  @media (max-width: 480px) {
-    .panel { padding: 16px; }
-    .info-grid { grid-template-columns: 1fr; }
-    .step-row { flex-direction: column; align-items: flex-start; }
-    .step-val { text-align: left; }
-  }
+@media (max-width: 480px) {
+  .panel { padding: 16px; }
+  .info-grid { grid-template-columns: 1fr; }
+  .step-row { flex-direction: column; align-items: flex-start; }
+  .step-val { text-align: left; }
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- Header -->
-  <header>
-    <span class="logo-icon">⚔️</span>
-    <h1 id="gameTitle">WC3 Save Generator</h1>
-    <p class="subtitle" id="gameSubtitle">Warcraft III Map · Save Code Tool</p>
-  </header>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('encode', this)">Generate</button>
-    <button class="tab" onclick="switchTab('decode', this)">Decode</button>
-    <button class="tab" onclick="switchTab('tables', this)">Bảng mã</button>
+  <!-- HERO -->
+  <div class="hero">
+    <img class="hero-img"
+         src="screenshot.png"
+         alt="SDM Defence cover art"
+         onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(160deg,#0d1a18 0%,#1a0a0c 100%)'">
+    <div class="hero-content">
+      <div class="game-badge">Warcraft III · Fan Map</div>
+      <h1 class="game-title">SDM <span>Defence</span></h1>
+      <div class="game-version">v0.31 · 東方Project</div>
+    </div>
   </div>
 
-  <!-- ══ TAB: ENCODE ══ -->
+  <!-- GAME INFO -->
+  <div class="info-section">
+    <div>
+      <p class="game-desc">Defend the Scarlet Devil Mansion from the intruders.</p>
+      <div class="game-meta">
+        <div><strong>Author&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong> 風</div>
+        <div><strong>Resources&nbsp;</strong> THDota · TBA · Orus · 黑暗靈蛇</div>
+        <div><strong>Translation</strong> Senfbrot <em style="opacity:.6">(Unofficial EN)</em></div>
+        <div><strong>Community&nbsp;</strong> <a href="http://www.midnightinsomnia.com" target="_blank">midnightinsomnia.com</a></div>
+        <div><strong>Thanks&nbsp;&nbsp;&nbsp;&nbsp;</strong> delyssen · Sedistra · Kai666</div>
+      </div>
+      <div class="warning-box">
+        <strong>⚠ Warning:</strong> Download from <strong>Midnight Insomnia</strong> for trusted versions.
+        If downloading from <em>Epicwar</em>, this is most likely a <strong>hacked version</strong>.
+      </div>
+    </div>
+
+    <a href="http://www.midnightinsomnia.com" target="_blank" class="btn-download">
+      <span class="dl-icon">⬇</span>
+      Download
+      <span class="dl-sub">Midnight Insomnia</span>
+    </a>
+  </div>
+
+  <!-- TOOL -->
+  <div class="tool-header"><h2>⚙ Save Code Tool</h2></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('encode',this)">Generate</button>
+    <button class="tab"        onclick="switchTab('decode',this)">Decode</button>
+    <button class="tab"        onclick="switchTab('tables',this)">Bảng mã</button>
+  </div>
+
+  <!-- TAB: ENCODE -->
   <div id="tab-encode" class="tab-section active">
     <div class="panel">
       <div class="field">
         <label>Tên Player</label>
         <input id="enc-name" type="text" placeholder="Dragon" maxlength="64"
                oninput="clearResult('enc')" onkeydown="enterKey(event,'enc-index')">
-        <div class="hint">Dùng ký tự 1 và 3 của tên (không phân biệt hoa/thường)</div>
+        <div class="hint">Dùng ký tự 1 và 3 của tên · không phân biệt hoa/thường</div>
       </div>
       <div class="field">
         <label>Chỉ số (điểm / level)</label>
@@ -440,108 +418,99 @@
                oninput="clearResult('enc')" onkeydown="enterKey(event,'enc-btn')">
         <div class="hint">Từ 0 đến 99,999</div>
       </div>
-      <button id="enc-btn" class="btn" onclick="doEncode()">⚔ Tạo Save Code</button>
-
+      <div class="btn-row">
+        <button id="enc-btn" class="btn" onclick="doEncode()">⚔ Generate Save Code</button>
+        <a href="http://www.midnightinsomnia.com" target="_blank" class="btn-dl-sm">
+          <span class="icon">⬇</span>
+          Download<br>Map
+        </a>
+      </div>
       <div id="enc-msg" class="msg"></div>
-
-      <!-- Result -->
       <div id="enc-result" class="result-box">
         <div class="result-label">Save Code</div>
         <div id="pw-display" class="password-display" onclick="copyPassword()" title="Click để copy"></div>
         <div id="copy-hint" class="copy-hint">Click để copy</div>
-
-        <!-- Steps -->
         <div class="steps">
-          <div class="step-row"><span class="step-key">Prefix (ký tự 1+3)</span><span id="s-prefix" class="step-val mono-gold"></span></div>
-          <div class="step-row"><span class="step-key">Chỉ số (có padding)</span><span id="s-padded" class="step-val"></span></div>
-          <div class="step-row"><span class="step-key">Checksum</span><span id="s-checksum" class="step-val"></span></div>
-          <div class="step-row"><span class="step-key">Seed 9 ký tự</span><span id="s-seed9" class="step-val"></span></div>
-          <div class="step-row"><span class="step-key">Sau mã hóa</span><span id="s-encoded" class="step-val mono-gold"></span></div>
-          <div class="step-row"><span class="step-key">Sau hoán vị</span><span id="s-final" class="step-val mono-gold"></span></div>
+          <div class="step-row"><span class="step-key">Prefix (ký tự 1+3)</span><span id="s-prefix"   class="step-val hl"></span></div>
+          <div class="step-row"><span class="step-key">Chỉ số (có padding)</span><span id="s-padded"   class="step-val"></span></div>
+          <div class="step-row"><span class="step-key">Checksum</span>           <span id="s-checksum" class="step-val"></span></div>
+          <div class="step-row"><span class="step-key">Seed 9 ký tự</span>      <span id="s-seed9"    class="step-val"></span></div>
+          <div class="step-row"><span class="step-key">Sau mã hóa</span>        <span id="s-encoded"  class="step-val hl"></span></div>
+          <div class="step-row"><span class="step-key">Sau hoán vị</span>       <span id="s-final"    class="step-val hl"></span></div>
         </div>
-
-        <!-- WC3 colored -->
-        <div style="margin-top:14px">
+        <div style="margin-top:12px">
           <div class="result-label">Preview màu WC3</div>
-          <div id="wc3-preview" style="font-size:13px; word-break:break-all; line-height:1.8;"></div>
+          <div id="wc3-preview" style="font-size:13px;word-break:break-all;line-height:2;"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ══ TAB: DECODE ══ -->
+  <!-- TAB: DECODE -->
   <div id="tab-decode" class="tab-section">
     <div class="panel">
       <div class="field">
         <label>Save Code (9 ký tự)</label>
         <input id="dec-code" type="text" placeholder="FKAUYDFN7" maxlength="9"
                oninput="clearResult('dec')" onkeydown="enterKey(event,'dec-btn')"
-               style="text-transform:uppercase; letter-spacing:0.15em; font-size:18px;">
+               style="text-transform:uppercase;letter-spacing:0.15em;font-size:18px;">
       </div>
-      <button id="dec-btn" class="btn" onclick="doDecode()">🔍 Giải Mã</button>
-
+      <div class="btn-row">
+        <button id="dec-btn" class="btn" onclick="doDecode()">🔍 Decode Password</button>
+        <a href="http://www.midnightinsomnia.com" target="_blank" class="btn-dl-sm">
+          <span class="icon">⬇</span>
+          Download<br>Map
+        </a>
+      </div>
       <div id="dec-msg" class="msg"></div>
-
       <div id="dec-result" class="decode-result">
         <div class="info-grid">
           <div class="info-card">
-            <div class="val" id="d-index">—</div>
-            <div class="key">Chỉ số</div>
+            <div class="val" id="d-index">—</div><div class="key">Chỉ số</div>
           </div>
           <div class="info-card">
-            <div class="val" id="d-prefix">—</div>
-            <div class="key">Prefix tên</div>
+            <div class="val" id="d-prefix">—</div><div class="key">Prefix tên</div>
           </div>
           <div class="info-card" style="grid-column:1/-1">
-            <div class="val" id="d-checksum">—</div>
-            <div class="key">Checksum</div>
+            <div class="val" id="d-checksum">—</div><div class="key">Checksum</div>
           </div>
         </div>
-
-        <!-- Steps -->
-        <div class="steps" style="margin-top:16px">
-          <div class="step-row"><span class="step-key">Đảo hoán vị</span><span id="ds-unperm" class="step-val mono-gold"></span></div>
-          <div class="step-row"><span class="step-key">Sau giải mã digit</span><span id="ds-seed9" class="step-val"></span></div>
-          <div class="step-row"><span class="step-key">5 digit dữ liệu</span><span id="ds-data" class="step-val"></span></div>
+        <div class="steps" style="margin-top:14px">
+          <div class="step-row"><span class="step-key">Đảo hoán vị</span>      <span id="ds-unperm" class="step-val hl"></span></div>
+          <div class="step-row"><span class="step-key">Sau giải mã digit</span><span id="ds-seed9"  class="step-val"></span></div>
+          <div class="step-row"><span class="step-key">5 digit dữ liệu</span>  <span id="ds-data"   class="step-val"></span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ══ TAB: TABLES ══ -->
+  <!-- TAB: TABLES -->
   <div id="tab-tables" class="tab-section">
     <div class="panel">
-      <p style="color:var(--text-dim); font-size:12px; margin-bottom:16px; line-height:1.8;">
-        7 bảng mã hóa này được tái tạo từ <code style="color:var(--gold)">War3map.j</code>.
-        Mỗi bảng ánh xạ một chữ số (0–9) thành một ký tự cho từng vị trí trong seed.
+      <p style="color:var(--text-dim);font-size:12px;margin-bottom:16px;line-height:1.8;">
+        7 bảng mã hóa tái tạo từ <code style="color:var(--teal)">War3map.j</code>.
+        Chỉnh tại <code style="color:var(--teal)">config.js</code> khi map cập nhật.
       </p>
       <div id="tables-container"></div>
-
-      <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--border)">
-        <div class="result-label" style="margin-bottom:8px">Hoán vị (0-based)</div>
-        <div id="perm-display" style="font-family:var(--mono); color:var(--gold); font-size:15px; letter-spacing:0.1em;"></div>
-        <div class="hint" style="margin-top:4px">
-          output[i] = encoded[permutation[i]] — lấy theo thứ tự [5,8,2,4,7,1,6,9,3] (1-based)
-        </div>
+      <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+        <div class="result-label" style="margin-bottom:6px">Hoán vị (0-based)</div>
+        <div id="perm-display" style="font-family:var(--mono);color:var(--teal);font-size:14px;letter-spacing:0.1em;"></div>
+        <div class="hint" style="margin-top:4px">output[i] = encoded[perm[i]] · [5,8,2,4,7,1,6,9,3] (1-based)</div>
       </div>
     </div>
   </div>
 
   <footer>
-    Tái tạo từ War3map.j bằng <a href="#" title="jass_deobfuscator.py">jass_deobfuscator.py</a>
-    &nbsp;·&nbsp;
-    Chỉnh bảng mã tại <code style="color:var(--gold-dim)">config.js</code>
+    <div>SDM Defence v0.31 · Author: 風 · <a href="http://www.midnightinsomnia.com" target="_blank">midnightinsomnia.com</a></div>
+    <div class="footer-credits">Save tool reconstructed from War3map.j · Logic verified against original JASS</div>
   </footer>
 
-</div><!-- .wrap -->
+</div>
 
 <script>
-// ─────────────────────────────────────────────────────────────
-// Load config (từ config.js hoặc fallback inline)
-// ─────────────────────────────────────────────────────────────
 const CFG = (typeof WC3_CONFIG !== 'undefined') ? WC3_CONFIG : {
-  game: { name:'WC3 Save Generator', description:'Warcraft III Save Tool', maxIndex:99999, passwordLen:9 },
-  encodeTables: [
+  game:{ name:'SDM Defence Save Generator', maxIndex:99999, passwordLen:9 },
+  encodeTables:[
     {0:'7',1:'2',2:'8',3:'S',4:'W',5:'A',6:'T',7:'1',8:'6',9:'4'},
     {0:'5',1:'U',2:'6',3:'I',4:'8',5:'O',6:'L',7:'J',8:'F',9:'E'},
     {0:'8',1:'4',2:'F',3:'6',4:'9',5:'I',6:'3',7:'5',8:'B',9:'S'},
@@ -550,265 +519,132 @@ const CFG = (typeof WC3_CONFIG !== 'undefined') ? WC3_CONFIG : {
     {0:'K',1:'3',2:'S',3:'8',4:'Y',5:'2',6:'O',7:'4',8:'P',9:'6'},
     {0:'4',1:'G',2:'8',3:'A',4:'C',5:'Z',6:'X',7:'V',8:'N',9:'M'},
   ],
-  permutation: [4,7,1,3,6,0,5,8,2],
-  wc3Color: 'FFFFCC00',
+  permutation:[4,7,1,3,6,0,5,8,2],
+  wc3Color:'00E5CC',
 };
 
-// Áp dụng thông tin game
-document.getElementById('gameTitle').textContent    = CFG.game.name;
-document.getElementById('gameSubtitle').textContent = CFG.game.description;
-document.title = CFG.game.name;
-
-// Bảng nghịch: ký tự → digit
 const DECODE_TABLES = CFG.encodeTables.map(t =>
-  Object.fromEntries(Object.entries(t).map(([k,v]) => [v, Number(k)]))
+  Object.fromEntries(Object.entries(t).map(([k,v])=>[v,Number(k)]))
 );
 
-// ─────────────────────────────────────────────────────────────
-// Core logic (mirror wc3_save_generator.py)
-// ─────────────────────────────────────────────────────────────
+function getPrefix(n){ const u=n.toUpperCase(); return(u[0]||'X')+(u[2]||'X'); }
+function padIndex(i){ if(i<=9)return'0000'+i;if(i<=99)return'000'+i;if(i<=999)return'00'+i;if(i<=9999)return'0'+i;if(i<=99999)return''+i;return'99999'; }
+function checksum(s7){ let t=0;for(let i=2;i<7;i++)t+=parseInt(s7[i]);return t<=9?'0'+t:''+t; }
+function encDigits(s9){ let e=s9.slice(0,2);for(let i=0;i<7;i++)e+=CFG.encodeTables[i][parseInt(s9[2+i])];return e; }
+function permute(s){ return CFG.permutation.map(i=>s[i]).join(''); }
 
-function getPrefix(name) {
-  const u = name.toUpperCase();
-  const c1 = u[0] || 'X';
-  const c3 = u[2] || 'X';
-  return c1 + c3;
+function generate(name,index){
+  const prefix=getPrefix(name),padded=padIndex(index),seed7=prefix+padded;
+  const cs=checksum(seed7),seed9=seed7+cs,enc=encDigits(seed9);
+  return{prefix,padded,checksum:cs,seed7,seed9,encoded9:enc,final:permute(enc)};
 }
-
-function padIndex(idx) {
-  if (idx <= 9)     return '0000' + idx;
-  if (idx <= 99)    return '000'  + idx;
-  if (idx <= 999)   return '00'   + idx;
-  if (idx <= 9999)  return '0'    + idx;
-  if (idx <= 99999) return ''     + idx;
-  return '99999';
-}
-
-function computeChecksum(seed7) {
-  let total = 0;
-  for (let i = 2; i < 7; i++) total += parseInt(seed7[i]);
-  return total <= 9 ? '0' + total : '' + total;
-}
-
-function encodeDigits(seed9) {
-  let enc = seed9.slice(0, 2);
-  for (let i = 0; i < 7; i++) {
-    const digit = parseInt(seed9[2 + i]);
-    enc += CFG.encodeTables[i][digit];
+function decode(pw){
+  if(pw.length!==CFG.game.passwordLen)return null;
+  const up=new Array(9);
+  CFG.permutation.forEach((ii,oi)=>{up[ii]=pw[oi];});
+  const unp=up.join(''),prefix=unp.slice(0,2);
+  let digits='';
+  for(let i=0;i<7;i++){
+    const d=DECODE_TABLES[i][unp[2+i]];
+    if(d===undefined)return{error:`Ký tự '${unp[2+i]}' không hợp lệ ở bảng ${i+1}`};
+    digits+=d;
   }
-  return enc;
+  const seed9=prefix+digits,ac=parseInt(seed9.slice(7,9));
+  const ec=[2,3,4,5,6].reduce((s,i)=>s+parseInt(seed9[i]),0);
+  return{prefix,seed9,index:parseInt(seed9.slice(2,7)),actualCs:ac,expectedCs:ec,
+         checksumOk:ac===ec,unpermed:unp,dataStr:seed9.slice(2,7),error:null};
 }
 
-function permute(s9) {
-  return CFG.permutation.map(i => s9[i]).join('');
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active'); btn.classList.add('active');
+}
+function showMsg(id,t,type){ const e=document.getElementById(id+'-msg');e.textContent=t;e.className=`msg ${type} show`; }
+function clearMsg(id){ const e=document.getElementById(id+'-msg');if(e){e.className='msg';e.textContent='';} }
+function clearResult(id){ clearMsg(id);const r=document.getElementById(id+'-result')||document.getElementById('dec-result');if(r)r.classList.remove('show'); }
+function enterKey(e,nid){ if(e.key==='Enter'){const el=document.getElementById(nid);if(el.tagName==='BUTTON')el.click();else el.focus();} }
+function renderPw(pw){ return pw.split('').map(c=>`<span class="pw-char ${/\d/.test(c)?'digit':'letter'}">${c}</span>`).join(''); }
+function renderWc3(pw){
+  const col=CFG.wc3Color||'00E5CC';
+  return pw.split('').map(c=>/\d/.test(c)
+    ?`<span style="color:var(--text-dim)">${c}</span>`
+    :`<span style="color:#${col};text-shadow:0 0 8px rgba(0,229,204,.7);font-weight:bold">${c}</span>`
+  ).join('');
 }
 
-function generate(name, index) {
-  const prefix   = getPrefix(name);
-  const padded   = padIndex(index);
-  const seed7    = prefix + padded;
-  const checksum = computeChecksum(seed7);
-  const seed9    = seed7 + checksum;
-  const encoded9 = encodeDigits(seed9);
-  const final    = permute(encoded9);
-  return { prefix, padded, checksum, seed7, seed9, encoded9, final };
-}
-
-function decode(pw) {
-  if (pw.length !== CFG.game.passwordLen) return null;
-
-  // Đảo hoán vị
-  const unperm = new Array(9);
-  CFG.permutation.forEach((inIdx, outIdx) => { unperm[inIdx] = pw[outIdx]; });
-  const unpermed = unperm.join('');
-
-  const prefix = unpermed.slice(0, 2);
-  let digits = '';
-  for (let i = 0; i < 7; i++) {
-    const ch = unpermed[2 + i];
-    const d = DECODE_TABLES[i][ch];
-    if (d === undefined) return { error: `Ký tự '${ch}' không hợp lệ ở bảng ${i+1}` };
-    digits += d;
-  }
-
-  const seed9       = prefix + digits;
-  const actualCs    = parseInt(seed9.slice(7, 9));
-  const expectedCs  = [2,3,4,5,6].reduce((s,i) => s + parseInt(seed9[i]), 0);
-  const index       = parseInt(seed9.slice(2, 7));
-
-  return {
-    prefix, digits, seed9, index,
-    actualCs, expectedCs,
-    checksumOk: actualCs === expectedCs,
-    unpermed,
-    dataStr: seed9.slice(2, 7),
-    error: null,
-  };
-}
-
-// ─────────────────────────────────────────────────────────────
-// UI
-// ─────────────────────────────────────────────────────────────
-
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  btn.classList.add('active');
-}
-
-function showMsg(id, text, type) {
-  const el = document.getElementById(id + '-msg');
-  el.textContent = text;
-  el.className = `msg ${type} show`;
-}
-function clearMsg(id) {
-  const el = document.getElementById(id + '-msg');
-  if (el) { el.className = 'msg'; el.textContent = ''; }
-}
-function clearResult(id) {
-  clearMsg(id);
-  const r = document.getElementById(id + '-result') || document.getElementById('dec-result');
-  if (r) r.classList.remove('show');
-}
-
-function enterKey(e, nextId) {
-  if (e.key === 'Enter') {
-    const el = document.getElementById(nextId);
-    if (el.tagName === 'BUTTON') el.click();
-    else el.focus();
-  }
-}
-
-// Password display with colored chars
-function renderPassword(pw) {
-  return pw.split('').map(ch => {
-    const cls = /\d/.test(ch) ? 'digit' : 'letter';
-    return `<span class="pw-char ${cls}">${ch}</span>`;
-  }).join('');
-}
-
-// WC3 color preview
-function renderWc3(pw) {
-  return pw.split('').map(ch => {
-    if (/\d/.test(ch)) return `<span style="color:var(--text-dim)">${ch}</span>`;
-    return `<span style="color:#${CFG.wc3Color}; text-shadow:0 0 6px rgba(200,168,75,0.6); font-weight:bold">${ch}</span>`;
-  }).join('');
-}
-
-function doEncode() {
+function doEncode(){
   clearMsg('enc');
-  const name  = document.getElementById('enc-name').value.trim();
-  const idxRaw = document.getElementById('enc-index').value.trim();
-
-  if (!name) return showMsg('enc', 'Vui lòng nhập tên player.', 'error');
-  if (name.length < 3) return showMsg('enc', 'Tên phải có ít nhất 3 ký tự (cần ký tự 1 và 3).', 'error');
-  if (idxRaw === '') return showMsg('enc', 'Vui lòng nhập chỉ số.', 'error');
-
-  const idx = parseInt(idxRaw);
-  if (isNaN(idx) || idx < 0) return showMsg('enc', 'Chỉ số phải là số không âm.', 'error');
-  if (idx > CFG.game.maxIndex) return showMsg('enc', `Chỉ số tối đa là ${CFG.game.maxIndex.toLocaleString()}.`, 'error');
-
-  const r = generate(name, idx);
-
-  document.getElementById('pw-display').innerHTML = renderPassword(r.final);
-  document.getElementById('copy-hint').textContent = 'Click để copy';
-  document.getElementById('copy-hint').className = 'copy-hint';
-
-  document.getElementById('s-prefix').textContent   = r.prefix;
-  document.getElementById('s-padded').textContent   = r.padded + ' (' + idx + ')';
-  document.getElementById('s-checksum').textContent = r.checksum + ' (tổng: ' + [2,3,4,5,6].reduce((s,i) => s+parseInt(r.seed7[i]),0) + ')';
-  document.getElementById('s-seed9').textContent    = r.seed9;
-  document.getElementById('s-encoded').textContent  = r.encoded9;
-  document.getElementById('s-final').textContent    = r.final;
-
-  document.getElementById('wc3-preview').innerHTML =
-    '|CFFFFCC00 ... |R notation: ' + renderWc3(r.final);
-
-  document.getElementById('enc-result').classList.add('show');
-  document.getElementById('enc-result')._pw = r.final;
+  const name=document.getElementById('enc-name').value.trim();
+  const raw=document.getElementById('enc-index').value.trim();
+  if(!name)return showMsg('enc','Vui lòng nhập tên player.','error');
+  if(name.length<3)return showMsg('enc','Tên phải có ít nhất 3 ký tự.','error');
+  if(raw==='')return showMsg('enc','Vui lòng nhập chỉ số.','error');
+  const idx=parseInt(raw);
+  if(isNaN(idx)||idx<0)return showMsg('enc','Chỉ số phải là số không âm.','error');
+  if(idx>CFG.game.maxIndex)return showMsg('enc',`Tối đa ${CFG.game.maxIndex.toLocaleString()}.`,'error');
+  const r=generate(name,idx);
+  document.getElementById('pw-display').innerHTML=renderPw(r.final);
+  document.getElementById('copy-hint').textContent='Click để copy';
+  document.getElementById('copy-hint').className='copy-hint';
+  document.getElementById('s-prefix').textContent=r.prefix;
+  document.getElementById('s-padded').textContent=r.padded+' ('+idx+')';
+  document.getElementById('s-checksum').textContent=r.checksum+' (tổng: '+[2,3,4,5,6].reduce((s,i)=>s+parseInt(r.seed7[i]),0)+')';
+  document.getElementById('s-seed9').textContent=r.seed9;
+  document.getElementById('s-encoded').textContent=r.encoded9;
+  document.getElementById('s-final').textContent=r.final;
+  document.getElementById('wc3-preview').innerHTML=renderWc3(r.final);
+  const box=document.getElementById('enc-result');
+  box.classList.add('show'); box._pw=r.final;
 }
-
-function doDecode() {
+function doDecode(){
   clearMsg('dec');
-  const raw = document.getElementById('dec-code').value.trim().toUpperCase();
-
-  if (!raw) return showMsg('dec', 'Vui lòng nhập save code.', 'error');
-  if (raw.length !== CFG.game.passwordLen)
-    return showMsg('dec', `Save code phải đúng ${CFG.game.passwordLen} ký tự (nhận được ${raw.length}).`, 'error');
-
-  const r = decode(raw);
-  if (!r) return showMsg('dec', 'Lỗi không xác định.', 'error');
-  if (r.error) return showMsg('dec', r.error, 'error');
-
-  document.getElementById('d-index').textContent    = r.index.toLocaleString();
-  document.getElementById('d-prefix').textContent   = r.prefix;
-  document.getElementById('d-checksum').textContent = r.checksumOk
-    ? `${r.actualCs} ✓` : `${r.actualCs} ≠ ${r.expectedCs} ✗`;
-  document.getElementById('d-checksum').style.color = r.checksumOk ? 'var(--green)' : 'var(--red)';
-
-  document.getElementById('ds-unperm').textContent  = r.unpermed;
-  document.getElementById('ds-seed9').textContent   = r.seed9;
-  document.getElementById('ds-data').textContent    = r.dataStr + ' → ' + r.index;
-
-  if (!r.checksumOk)
-    showMsg('dec', `⚠ Checksum không khớp (tính được ${r.expectedCs}, trong code là ${r.actualCs}). Code có thể bị sai.`, 'warn');
-
+  const raw=document.getElementById('dec-code').value.trim().toUpperCase();
+  if(!raw)return showMsg('dec','Vui lòng nhập save code.','error');
+  if(raw.length!==CFG.game.passwordLen)return showMsg('dec',`Save code phải đúng ${CFG.game.passwordLen} ký tự (nhận được ${raw.length}).`,'error');
+  const r=decode(raw);
+  if(!r)return showMsg('dec','Lỗi không xác định.','error');
+  if(r.error)return showMsg('dec',r.error,'error');
+  document.getElementById('d-index').textContent=r.index.toLocaleString();
+  document.getElementById('d-prefix').textContent=r.prefix;
+  const ce=document.getElementById('d-checksum');
+  ce.textContent=r.checksumOk?r.actualCs+' ✓':r.actualCs+' ≠ '+r.expectedCs+' ✗';
+  ce.style.color=r.checksumOk?'var(--green)':'var(--red)';
+  document.getElementById('ds-unperm').textContent=r.unpermed;
+  document.getElementById('ds-seed9').textContent=r.seed9;
+  document.getElementById('ds-data').textContent=r.dataStr+' → '+r.index;
+  if(!r.checksumOk)showMsg('dec',`⚠ Checksum không khớp (tính được ${r.expectedCs}, trong code là ${r.actualCs}).`,'warn');
   document.getElementById('dec-result').classList.add('show');
 }
-
-function copyPassword() {
-  const box = document.getElementById('enc-result');
-  const pw  = box._pw;
-  if (!pw) return;
-  navigator.clipboard.writeText(pw).then(() => {
-    const hint = document.getElementById('copy-hint');
-    hint.textContent = '✓ Đã copy!';
-    hint.className = 'copy-hint copied';
-    setTimeout(() => {
-      hint.textContent = 'Click để copy';
-      hint.className = 'copy-hint';
-    }, 2000);
+function copyPassword(){
+  const box=document.getElementById('enc-result'),pw=box._pw;if(!pw)return;
+  navigator.clipboard.writeText(pw).then(()=>{
+    const h=document.getElementById('copy-hint');
+    h.textContent='✓ Đã copy!';h.className='copy-hint copied';
+    setTimeout(()=>{h.textContent='Click để copy';h.className='copy-hint';},2000);
   });
 }
 
-// ─────────────────────────────────────────────────────────────
-// Build encode tables display
-// ─────────────────────────────────────────────────────────────
-function buildTables() {
-  const container = document.getElementById('tables-container');
-  const digits = [0,1,2,3,4,5,6,7,8,9];
-
-  // Single merged table
-  const tbl = document.createElement('table');
-  const thead = document.createElement('thead');
-  const hRow = document.createElement('tr');
-  ['Digit', ...CFG.encodeTables.map((_,i) => `Bảng ${i+1}`)].forEach(h => {
-    const th = document.createElement('th');
-    th.textContent = h;
-    hRow.appendChild(th);
+// Build tables
+(function(){
+  const c=document.getElementById('tables-container');
+  const tbl=document.createElement('table');
+  const thead=document.createElement('thead'),hr=document.createElement('tr');
+  ['Digit',...CFG.encodeTables.map((_,i)=>`Bảng ${i+1}`)].forEach(h=>{
+    const th=document.createElement('th');th.textContent=h;hr.appendChild(th);
   });
-  thead.appendChild(hRow);
-  tbl.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
-  digits.forEach(d => {
-    const tr = document.createElement('tr');
-    [d, ...CFG.encodeTables.map(t => t[d])].forEach((v, i) => {
-      const td = document.createElement('td');
-      td.textContent = v;
-      tr.appendChild(td);
+  thead.appendChild(hr);tbl.appendChild(thead);
+  const tbody=document.createElement('tbody');
+  for(let d=0;d<10;d++){
+    const tr=document.createElement('tr');
+    [d,...CFG.encodeTables.map(t=>t[d])].forEach(v=>{
+      const td=document.createElement('td');td.textContent=v;tr.appendChild(td);
     });
     tbody.appendChild(tr);
-  });
-  tbl.appendChild(tbody);
-  container.appendChild(tbl);
-
-  // Permutation
-  document.getElementById('perm-display').textContent =
-    '[' + CFG.permutation.join(', ') + ']';
-}
-buildTables();
+  }
+  tbl.appendChild(tbody);c.appendChild(tbl);
+  document.getElementById('perm-display').textContent='['+CFG.permutation.join(', ')+']';
+})();
 </script>
 </body>
 </html>
