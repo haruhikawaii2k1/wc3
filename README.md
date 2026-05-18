@@ -1,5 +1,4 @@
-
-https://haruhikawaii2k1.github.io/wc3/
+https://haruhikawaii2k1.github.io/SDM-Defence/
 ![Alt Text](screenshot.png)
 SDM Defence v0.31
 
