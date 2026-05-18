@@ -1,6 +1,6 @@
 
 https://haruhikawaii2k1.github.io/wc3/
-https://haruhikawaii2k1.github.io/wc3/screenshot.png
+![Alt Text](screenshot.png)
 SDM Defence v0.31
 
 created by
